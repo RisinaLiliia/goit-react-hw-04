@@ -1,32 +1,39 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import Modal from "react-modal";
 import css from "./ImageModal.module.css";
 
 Modal.setAppElement("#root");
 
 const ImageModal = ({ isOpen, onClose, image }) => {
-  useEffect(() => {
-    const handleKeyDown = (event) => {
+  const handleKeyDown = useCallback(
+    (event) => {
       if (event.key === "Escape") {
         onClose();
       }
-    };
+    },
+    [onClose]
+  );
 
+  useEffect(() => {
     if (isOpen) {
       document.addEventListener("keydown", handleKeyDown);
     } else {
       document.removeEventListener("keydown", handleKeyDown);
     }
 
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, handleKeyDown]);
 
-  if (!image) return null;
+  if (!isOpen || !image) return null;
 
   return (
     <Modal
+      key={isOpen ? "open" : "closed"}
       isOpen={isOpen}
       onRequestClose={onClose}
+      shouldCloseOnOverlayClick={true}
       overlayClassName={css.overlay}
       className={css.modal}
       contentLabel="Image Modal"

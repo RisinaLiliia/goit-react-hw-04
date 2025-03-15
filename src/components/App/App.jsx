@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { fetchImages } from "../../unsplashAPI";
 import SearchBar from "../SearchBar/SearchBar";
@@ -8,52 +8,63 @@ import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import ImageModal from "../ImageModal/ImageModal";
 
-const App = () => {
-  const [images, setImages] = useState([]);
+export default function App() {
   const [query, setQuery] = useState("");
+  const [images, setImages] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  useEffect(() => {
-    if (!query) return;
+  const getImages = useCallback(async (searchQuery, pageNumber) => {
+    if (!searchQuery) return;
 
-    const getImages = async () => {
-      setIsLoading(true);
-      setError(null);
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const newImages = await fetchImages(query, page);
-        if (newImages.length === 0) {
-          toast.error("No images found. Try a different search!");
-          return;
-        }
-
-        setImages((prev) => (page === 1 ? newImages : [...prev, ...newImages]));
-
-        if (page === 1) {
-          toast.success(`Found ${newImages.length} images!`);
-        }
-      } catch {
-        setError("Something went wrong. Try again!");
-        toast.error("Failed to fetch images. Please try again!");
-      } finally {
-        setIsLoading(false);
+    try {
+      const newImages = await fetchImages(searchQuery, pageNumber);
+      if (newImages.length === 0) {
+        toast.error("No images found. Try a different search!");
+        return;
       }
-    };
 
-    getImages();
-  }, [query, page]);
+      setImages((prev) =>
+        pageNumber === 1 ? newImages : [...prev, ...newImages]
+      );
 
-  const handleSearch = (newQuery) => {
-    if (query === newQuery.trim()) {
+      if (pageNumber === 1) {
+        toast.success(`Found ${newImages.length} images!`);
+      }
+    } catch (error) {
+      console.log("Error caught:", error);
+      setError("Something went wrong. Try again!");
+      toast.error("Failed to fetch images. Please try again!");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    getImages(query, page);
+  }, [query, page, getImages]);
+
+  const handleSearch = (newQuery, resetForm) => {
+    const trimmedQuery = newQuery.trim();
+    if (!trimmedQuery) {
+      toast.error("Please enter a search term!");
+      return;
+    }
+
+    if (query === trimmedQuery) {
       toast("You are already viewing results for this search!");
       return;
     }
-    setQuery(newQuery.trim());
+
+    setQuery(trimmedQuery);
     setImages([]);
     setPage(1);
+    resetForm();
   };
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
@@ -79,6 +90,4 @@ const App = () => {
       )}
     </div>
   );
-};
-
-export default App;
+}

@@ -2,56 +2,89 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.8);
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .modal {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 1080px;
-  width: 100%;
+  background-color: white;
+  max-width: 100vw;
   max-height: 100vh;
   overflow: hidden;
-  background: none;
-  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .imageWrapper {
+  position: relative;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 90%;
+  max-height: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 1080px;
-  width: 100%;
 }
 
 .modalImage {
-  width: 100%;
-  max-width: 1080px;
-  max-height: calc(100vh - 100px);
-  object-fit: contain;
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 5px;
+  margin-bottom: 10px;
 }
 
 .imageInfo {
-  color: white;
+  color: #333;
   text-align: center;
-  width: 100%;
+  font-size: 14px;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
 
-  padding: 10px;
+.imageTitle {
+  font-weight: bold;
+  margin: 0;
+}
+
+.imageAuthor,
+.imageStats {
+  margin: 0;
 }
 
 .imageTitle::first-letter {
   text-transform: uppercase;
 }
 
-.imageTitle,
-.imageAuthor,
-.imageStats {
-  margin: 0;
+.image-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-modal {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

@@ -12,7 +12,7 @@
 }
 
 .inputWrapper {
-  margin-top: 10px;
+  margin-top: 20px;
   width: 100%;
   max-width: 320px;
   position: relative;
@@ -28,7 +28,7 @@
 
 .input:focus {
   border-color: #ff6600;
-  outline: none;
+  outline: #ff6600;
 }
 
 .searchButton {
